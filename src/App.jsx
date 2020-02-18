@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import {Container, Row, Col, Button} from 'react-bootstrap';
+import {Container, Row, Col, Button, Alert, Badge, Jumbotron} from 'react-bootstrap';
 
 export default function App() {
-    const initialCount = 5
+    const [initialCount, setInitialCount] = useState(10)
     const [count, setCount] = useState(initialCount)
+    const [working, setWorking] = useState(true)
     const [paused, setPaused] = useState(true)
 
     useEffect(() => {
@@ -11,6 +12,14 @@ export default function App() {
             if(count === 1) {
                 setCount(0)
                 setPaused(true)
+
+                if(working) {
+                    setInitialCount(5)
+                    setWorking(false)
+                } else {
+                    setInitialCount(10)
+                    setWorking(true)
+                }
             }
 
             if(!paused) {
@@ -18,7 +27,7 @@ export default function App() {
             }
         }, 1000)
         return () => clearInterval(interval)
-    }, [count, paused])
+    }, [count, working, paused])
 
     // useEffect(() => {
 
@@ -57,17 +66,21 @@ export default function App() {
     return (
         <>
             <Container>
-                <h1>Pomodoro Timer</h1>
-                <p className="fade alert alert-secondary show">{timerConvert(count)}</p>
+                <h1>Pomodoro Timer / <Badge variant="primary">{working ? 'Working' : 'Break'}</Badge></h1>
+                <hr/>
+                <br/>
+                <Jumbotron fluid>
+                <h1 className="text-center">{timerConvert(count)}</h1>
+                </Jumbotron>
                 <Row>
                     <Col>
-                        <Button variant="success" block onClick={() => startTimer()} disabled={!paused}>Start</Button>
+                        <Button variant="success" size="lg" block onClick={() => startTimer()} disabled={!paused}>Start</Button>
                     </Col>
                     <Col>
-                        <Button variant="secondary" block onClick={() => setPaused(true)} disabled={paused}>Stop</Button>
+                        <Button variant="secondary" size="lg" block onClick={() => setPaused(true)} disabled={paused}>Stop</Button>
                     </Col>
                     <Col>
-                        <Button variant="secondary" block onClick={() => {setCount(initialCount)}} disabled={paused}>Reset</Button>
+                        <Button variant="secondary" size="lg" block onClick={() => {setCount(initialCount)}} disabled={paused}>Reset</Button>
                     </Col>
                 </Row>
             </Container>
