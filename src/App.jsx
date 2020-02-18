@@ -1,16 +1,39 @@
 import React, { useState, useEffect } from 'react'
+import {Container, Row, Col, Button} from 'react-bootstrap';
 
 export default function App() {
-    const initialCount = 300
+    const initialCount = 5
     const [count, setCount] = useState(initialCount)
+    const [paused, setPaused] = useState(true)
 
     useEffect(() => {
-        document.title = `Timer: ${timerConvert(count)}`
+        const interval = setInterval(() => {
+            if(count === 1) {
+                setCount(0)
+                setPaused(true)
+            }
 
-        // const timer = setInterval(setCount(count - 1), 10000)
+            if(!paused) {
+                setCount(count => count ? count - 1 : 0)
+            }
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [count, paused])
 
-        return () => clearInterval(timer)
-    }, [count])
+    // useEffect(() => {
+
+    //     const timer = setInterval(setCount(count - 1), 10000)
+
+    //     return () => clearInterval(timer)
+    // }, [count])
+
+    function startTimer() {
+        if(count === 0) {
+            setCount(initialCount)
+        }
+
+        setPaused(false)
+    }
 
     function timerConvert(t) {
         let sec = 0
@@ -33,11 +56,21 @@ export default function App() {
 
     return (
         <>
-            <h1>Pomodoro Timer</h1>
-            <p>{timerConvert(count)}</p>
-            <button>Start</button>
-            <button>Stop</button>
-            <button onClick={() => setCount(initialCount)}>Reset</button>
+            <Container>
+                <h1>Pomodoro Timer</h1>
+                <p className="fade alert alert-secondary show">{timerConvert(count)}</p>
+                <Row>
+                    <Col>
+                        <Button variant="success" block onClick={() => startTimer()} disabled={!paused}>Start</Button>
+                    </Col>
+                    <Col>
+                        <Button variant="secondary" block onClick={() => setPaused(true)} disabled={paused}>Stop</Button>
+                    </Col>
+                    <Col>
+                        <Button variant="secondary" block onClick={() => {setCount(initialCount)}} disabled={paused}>Reset</Button>
+                    </Col>
+                </Row>
+            </Container>
         </>
     )
 }
