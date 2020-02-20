@@ -15,7 +15,7 @@ export default function App() {
         const interval = setInterval(() => {
             if(count === 0) {
                 setPaused(true)
-                
+
                 if(working) {
                     if(breakCount >= 3) {
                         setCount(breakTime * 2)
@@ -48,6 +48,8 @@ export default function App() {
     }
 
     function resetTimer() {
+        setSessionTime(1500)
+        setBreakTime(300)
         setCount(sessionTime)
         setBreakCount(0)
         setWorking(true)
@@ -60,35 +62,42 @@ export default function App() {
     }
 
     function updateSessionTime(time) {
+        if(!paused) {
+            return
+        }
+
+        if(time < 60) {
+            time = 60
+        } else if(time > 3600) {
+            time = 3600
+        }
+
         setSessionTime(time)
-
-        if(time < 60) {
-            setSessionTime(60)
-        } else if(time > 3600) {
-            setSessionTime(3600)
-        }
-
-        updateCount()
+        setCount(time)
     }
+
     function updateBreakTime(time) {
-        setBreakTime(time)
+        if(!paused) {
+            return
+        }
 
         if(time < 60) {
-            setBreakTime(60)
+            time = 60
         } else if(time > 3600) {
-            setBreakTime(3600)
+            time = 3600
         }
 
-        updateCount()
+        setBreakTime(time)
+        setCount(time)
     }
 
-    function updateCount() {
-        if(working) {
-            setCount(sessionTime)
-        } else {
-            setCount(breakTime)
-        }
-    }
+    // function updateCount() {
+    //     if(working) {
+    //         setCount(sessionTime)
+    //     } else {
+    //         setCount(breakTime)
+    //     }
+    // }
 
     function timerConvert(t) {
         let sec = 0
