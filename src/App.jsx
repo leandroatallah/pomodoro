@@ -73,7 +73,10 @@ export default function App() {
         }
 
         setSessionTime(time)
-        setCount(time)
+
+        if(working) {
+            setCount(time)
+        }
     }
 
     function updateBreakTime(time) {
@@ -88,7 +91,10 @@ export default function App() {
         }
 
         setBreakTime(time)
-        setCount(time)
+
+        if(!working) {
+            setCount(time)
+        }
     }
 
     // function updateCount() {
